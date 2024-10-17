@@ -108,10 +108,13 @@ namespace POE_p2_s4.Controllers
             {
                 return NotFound();
             }
+
+
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", course.UserId);
             ViewData["Id"] = course.Id;
             ViewData["LastUpdated"] = course.LastUpdated;
-            ViewData["UserNav"] = course.UserNav;
+        
+   
             
             return View(course);
         }
@@ -127,11 +130,16 @@ namespace POE_p2_s4.Controllers
             {
                 return NotFound();
             }
+            if (course.UserId != null)
+            {
+                course.UserNav = await _context.Users.FirstOrDefaultAsync(u => u.Id == course.UserId);
+            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    course.LastUpdated = DateTime.Now;  
                     _context.Update(course);
                     await _context.SaveChangesAsync();
                 }

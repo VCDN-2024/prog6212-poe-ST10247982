@@ -5,6 +5,7 @@
     ViewData["UserId"] = Model.UserId;
     ViewData["Id"] = Model.Id;
     ViewData["LastUpdated"] = Model.LastUpdated;
+
 }
 
 <h1>Edit</h1>
@@ -28,6 +29,7 @@
             </div>
             <input type="hidden" asp-for="LastUpdated" value=@ViewData["LastUpdated"] />
             <input type="hidden" asp-for="UserId" value=@ViewData["UserId"] />
+       
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
