@@ -3,7 +3,7 @@
     public class AcademicManager:User
     {
         public List<Course>? Courses { get; set; }
-        public ICollection<Notification> Notifications { get; set; }
+    
         public void reviewLecturerPerformance()
         {
 

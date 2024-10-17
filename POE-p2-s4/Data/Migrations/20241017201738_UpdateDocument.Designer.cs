@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POE_p2_s4.Data;
 
@@ -11,9 +12,11 @@ using POE_p2_s4.Data;
 namespace POE_p2_s4.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241017201738_UpdateDocument")]
+    partial class UpdateDocument
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,6 +238,34 @@ namespace POE_p2_s4.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("POE_p2_s4.Models.Document", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClaimId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("DocumentBinary")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("DocumentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClaimId")
+                        .IsUnique()
+                        .HasFilter("[ClaimId] IS NOT NULL");
+
+                    b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("POE_p2_s4.Models.Notification", b =>
@@ -504,6 +535,15 @@ namespace POE_p2_s4.Data.Migrations
                     b.Navigation("UserNav");
                 });
 
+            modelBuilder.Entity("POE_p2_s4.Models.Document", b =>
+                {
+                    b.HasOne("POE_p2_s4.Models.Claim", "ClaimNv")
+                        .WithOne("DocumentNav")
+                        .HasForeignKey("POE_p2_s4.Models.Document", "ClaimId");
+
+                    b.Navigation("ClaimNv");
+                });
+
             modelBuilder.Entity("POE_p2_s4.Models.Notification", b =>
                 {
                     b.HasOne("POE_p2_s4.Models.User", "UserNav")
@@ -524,6 +564,11 @@ namespace POE_p2_s4.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("authorizedBy");
+                });
+
+            modelBuilder.Entity("POE_p2_s4.Models.Claim", b =>
+                {
+                    b.Navigation("DocumentNav");
                 });
 
             modelBuilder.Entity("POE_p2_s4.Models.User", b =>
