@@ -2,41 +2,28 @@
 
 @{
     ViewData["Title"] = "Index";
-    var userType = User.FindFirst("UserType")?.Value; // Assuming UserType is stored as a claim
+
 }
 
 <h1>Index</h1>
 
-<p>
-    @if (userType == "Lecturer")
-    {
-        <a asp-action="Create">Create New</a>
-    }
-</p>
+@if ( ViewData["UserType"].ToString() == "Lecturer")
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ClaimType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ClaimDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HoursWorked)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ClaimExpenses)
-            </th>
-            <th>
-                Document
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ClaimStatus)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.ClaimType)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+            <th>@Html.DisplayNameFor(model => model.ClaimDate)</th>
+            <th>@Html.DisplayNameFor(model => model.HoursWorked)</th>
+            <th>@Html.DisplayNameFor(model => model.ClaimExpenses)</th>
+            <th>Document</th>
+            <th>@Html.DisplayNameFor(model => model.ClaimStatus)</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -44,21 +31,11 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClaimType)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClaimDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.HoursWorked)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClaimExpenses)
-                </td>
+                <td>@Html.DisplayFor(modelItem => item.ClaimType)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.ClaimDate)</td>
+                <td>@Html.DisplayFor(modelItem => item.HoursWorked)</td>
+                <td>@Html.DisplayFor(modelItem => item.ClaimExpenses)</td>
                 <td>
                     @if (item.DocumentBinary != null && item.DocumentBinary.Length > 0)
                     {
@@ -69,20 +46,18 @@
                         <span>No document attached</span>
                     }
                 </td>
+                <td>@Html.DisplayFor(modelItem => item.ClaimStatus)</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ClaimStatus)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a>
 
-                    @if (userType == "Admin" || userType == "HR" || userType == "ProgrammeCo_ordinator" || userType == "AcademicManager")
+                    @if (ViewData["UserType"].ToString() == "Admin" || ViewData["UserType"].ToString() == "HR" || ViewData["UserType"].ToString() == "ProgrammeCo_ordinator" || ViewData["UserType"].ToString() == "AcademicManager")
                     {
                         @if (item.ClaimStatus == "Pending")
                         {
-                     < a asp - action = "Approve" asp - route - id = "@item.Id" > Approve </ a > 
-                    < a asp - action = "Reject" asp - route - id = "@item.Id" > Reject </ a >
-                       }
+                            <a asp-action="Approve" asp-route-id="@item.Id" class="btn btn-success">Approve</a>
+                            <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-danger">Reject</a>
+                        }
                     }
                 </td>
             </tr>

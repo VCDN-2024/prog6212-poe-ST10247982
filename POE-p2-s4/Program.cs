@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using POE_p2_s4.Data;
@@ -17,10 +16,11 @@ namespace POE_p2_s4
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-            builder.Services.Configure<FormOptions>(options =>
+            builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = 10485760; 
             });
+        
             builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();

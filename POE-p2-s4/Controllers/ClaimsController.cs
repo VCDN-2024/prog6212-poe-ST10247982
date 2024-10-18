@@ -25,24 +25,43 @@ namespace POE_p2_s4.Controllers
         // GET: Claims
         public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value.ToString();
-            User user = null;
-             user = _context.Users.FirstOrDefault<User>(u => u.Id == userId);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(); // Ensure the user is logged in
+            }
+
+            // Fetch the logged-in user based on the userId
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found"); // Return error if user isn't found in the database
+            }
+
+            // Start building the claims query
             var claimsQuery = _context.Claims.AsQueryable();
-           
+
+            // Apply query filters based on the user's discriminator value (UserType)
             if (user.UserType == "Lecturer")
             {
-                
+                // Lecturers can see only their own claims
                 claimsQuery = claimsQuery.Where(c => c.UserId == user.Id);
             }
             else if (user.UserType == "Admin" || user.UserType == "HR" || user.UserType == "ProgrammeCo_ordinator" || user.UserType == "AcademicManager")
             {
-             
+                // Admins, HR, Programme Coordinators, and Academic Managers can see pending claims
                 claimsQuery = claimsQuery.Where(c => c.ClaimStatus == "Pending");
             }
 
-            var claims = await claimsQuery.ToListAsync();
-            return View(claims); 
+            // Pass the user type to the view for conditional rendering
+            ViewData["UserType"] = user.UserType;
+
+            // Execute the query and return the result to the view
+            List<Claim> claims = await claimsQuery.ToListAsync();
+
+            return View(claims);
         }
 
         // GET: Claims/Details/5
