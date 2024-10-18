@@ -3,94 +3,181 @@
 
 @{
     ViewData["Title"] = "Home Page";
-    var claims = ViewData["Claims"] as List<Claim>; // Claims data
-    var user = ViewData["User"] as POE_p2_s4.Models.User; // User data
-    var courses = ViewData["Courses"] as List<POE_p2_s4.Models.Course>; // Courses list
+    var claims = ViewData["Claims"] as List<Claim>;
+    var totalClaims = ViewData["TotalClaims"] != null ? (int)ViewData["TotalClaims"] : 0;
+    var approvedClaims = ViewData["ApprovedClaims"] != null ? (int)ViewData["ApprovedClaims"] : 0;
+    var rejectedClaims = ViewData["RejectedClaims"] != null ? (int)ViewData["RejectedClaims"] : 0;
+    var pendingClaims = ViewData["PendingClaims"] != null ? (int)ViewData["PendingClaims"] : 0;
+    User user = ViewData["User"] as POE_p2_s4.Models.User;
+    var courses = ViewData["Courses"] as List<Course>;
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
 
-    @if (user != null)
-    {
-        if (user.UserType == "Admin")
-        {
-            <p>Welcome Admin! You have full access to the system.</p>
-        }
-        else if (user.UserType == "HR")
-        {
-            <p>Welcome HR! You can manage employee claims and details.</p>
-        }
-        else if (user.UserType == "Lecturer")
-        {
-            <p>Welcome Lecturer! Below is your claims history.</p>
 
-            <!-- Claims Table -->
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Date Submitted</th>
-                        <th>Claim Type</th>
-                        <th>Claim Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                   
-                    @foreach (var claim in claims)
+    <div class="user-info">
+        @if (user != null)
+        {
+            <h2>Welcome @user.Email!</h2>
+            <p>Your role: @user.UserType</p>
+
+
+            @if (user.UserType == "Admin")
+            {
+                <p>Welcome Admin! You have full access to the system.</p>
+            }
+            else if (user.UserType == "HR")
+            {
+                <p>Welcome HR! You can manage employee claims and details.</p>
+            }
+            else if (user.UserType == "Lecturer")
+            {
+                <p>Welcome Lecturer! Below is your claims history.</p>
+
+                <div class="claims-section">
+                    <!-- Claims Table -->
+                    @if (claims != null && claims.Count > 0)
                     {
-                        <tr>
-                            <td>@claim.ClaimDate</td>
-                            <td>@claim.ClaimType</td>
-                            <td>@claim.ClaimStatus</td>
-                        </tr>
+                        <table class="table claims-table">
+                            <thead>
+                                <tr>
+                                    <th>Date Submitted</th>
+                                    <th>Claim Type</th>
+                                    <th>Claim Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var claim in claims)
+                                {
+                                    <tr>
+                                        <td>@claim.ClaimDate</td>
+                                        <td>@claim.ClaimType</td>
+                                        <td>@claim.ClaimStatus</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     }
-                </tbody>
-            </table>
+                    else
+                    {
+                        <p>No claims available.</p>
+                    }
 
-            <!-- Lecturer Info Block -->
-            <div style="display:flex; flex-direction:row; margin-top:20px;">
-                <div style="border: 1px solid black; padding: 20px; border-radius: 10px; width: 300px;">
-                    <h3>@user.Email</h3>
-                    <p>Courses involved:</p>
-                    <ul>
-                        @foreach (var course in courses)
-                        {
-                            <li>@course.Name</li>
-                        }
-                    </ul>
-                    <div style="width: 100px; height: 100px; border-radius: 50%; background-color: gray; display: flex; justify-content: center; align-items: center; font-size: 24px;">
-                        @user.Email[0]
+                    <!-- Lecturer Info Block -->
+                    <div class="info-block">
+                        <h3>Courses Involved:</h3>
+                        <ul>
+                            @if (courses != null && courses.Count > 0)
+                            {
+                                @foreach (var course in courses)
+                                {
+                                    <li>@course.Name</li>
+                                }
+                            }
+                            else
+                            {
+                                <li>No courses assigned.</li>
+                            }
+                        </ul>
+                    </div>
+
+                    <!-- Claim Report Summary -->
+                    <div class="summary-block">
+                        <h4>Claim Summary</h4>
+                        <p>Total Claims: @totalClaims</p>
+                        <p>Approved: @approvedClaims</p>
+                        <p>Rejected: @rejectedClaims</p>
+                        <p>Pending: @pendingClaims</p>
+
+                        <!-- Loading Bar -->
+                        <div class="loading-bar">
+                            <div class="approved" style="width:@(totalClaims > 0 ? (approvedClaims * 100 / totalClaims) : 0)%"></div>
+                            <div class="rejected" style="width:@(totalClaims > 0 ? (rejectedClaims * 100 / totalClaims) : 0)%"></div>
+                            <div class="pending" style="width:@(totalClaims > 0 ? (pendingClaims * 100 / totalClaims) : 0)%"></div>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Claim Report Summary -->
-                <div style="margin-left: 50px;">
-                    <h4>Claim Summary</h4>
-                    <p>Total Claims: @claims.Count()</p>
-                    <p>Approved: @claims.Count(c => c.ClaimStatus == "Approved")</p>
-                    <p>Rejected: @claims.Count(c => c.ClaimStatus == "Rejected")</p>
-                    <p>Pending: @claims.Count(c => c.ClaimStatus == "Pending")</p>
-
-                    <!-- Loading Bar -->
-                    <div style="width: 100%; height: 20px; background-color: #ddd;">
-                        <div style="width:@(claims.Count(c => c.ClaimStatus == "Approved") * 100 / claims.Count())%; height:100%; background-color: green;"></div>
-                        <div style="width:@(claims.Count(c => c.ClaimStatus == "Rejected") * 100 / claims.Count())%; height:100%; background-color: red;"></div>
-                        <div style="width:@(claims.Count(c => c.ClaimStatus == "Pending") * 100 / claims.Count())%; height:100%; background-color: yellow;"></div>
-                    </div>
-                </div>
-            </div>
+            }
+            else if (user.UserType == "ProgrammeCo_ordinator")
+            {
+                <p>Welcome Programme Coordinator! Manage course assignments and lecturer coordination.</p>
+            }
+            else if (user.UserType == "AcademicManager")
+            {
+                <p>Welcome Academic Manager! Oversee academic programs and lecturer performance.</p>
+            }
         }
-        else if (user.UserType == "ProgrammeCo_ordinator")
+        else
         {
-            <p>Welcome Programme Coordinator! Manage course assignments and lecturer coordination.</p>
+            <p>Please log in to access your account.</p>
         }
-        else if (user.UserType == "AcademicManager")
-        {
-            <p>Welcome Academic Manager! Oversee academic programs and lecturer performance.</p>
+    </div>
+
+    <style>
+        .user-info {
+            margin: 20px 0;
         }
-    }
-    else
-    {
-        <p>Please log in to view your personalized dashboard.</p>
-    }
-</div>
+
+        .claims-section {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .claims-table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+            .claims-table th, .claims-table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            .claims-table th {
+                background-color: #f2f2f2;
+            }
+
+        .info-block {
+            margin-top: 20px;
+            border: 1px solid #007bff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .summary-block {
+            margin-top: 20px;
+            border: 1px solid #28a745;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #ddd;
+            border-radius: 5px;
+            position: relative;
+        }
+
+            .loading-bar > div {
+                height: 100%;
+                position: absolute;
+                top: 0;
+            }
+
+        .approved {
+            background-color: green;
+        }
+
+        .rejected {
+            background-color: red;
+        }
+
+        .pending {
+            background-color: yellow;
+        }
+    </style>
