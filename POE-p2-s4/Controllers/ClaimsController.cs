@@ -25,6 +25,11 @@ namespace POE_p2_s4.Controllers
         // GET: Claims
         public async Task<IActionResult> Index()
         {
+
+            // Code Attribution
+            //Pro C# 10 with .Net 6
+            // Adrew Troelsen, Phil Japsike
+            // Entity Framework
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userId))

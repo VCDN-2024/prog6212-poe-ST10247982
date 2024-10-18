@@ -24,6 +24,10 @@ namespace POE_p2_s4.Controllers
         // GET: Courses
         public async Task<IActionResult> Index()
         {
+            // Code Attribution
+            //Pro C# 10 with .Net 6
+            // Adrew Troelsen, Phil Japsike
+          
             var applicationDbContext = _context.Courses.Include(c => c.UserNav);
             return View(await applicationDbContext.ToListAsync());
         }
