@@ -1,0 +1,66 @@
+﻿@model POE_p2_s4.Models.Claim
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Claim</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="ClaimType" class="control-label"></label>
+                <input asp-for="ClaimType" class="form-control" readonly value=@ViewData["ClaimType"] />
+                <span asp-validation-for="ClaimType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" readonly value=@ViewData["Description"] />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClaimDate" class="control-label"></label>
+                <input asp-for="ClaimDate" class="form-control" readonly value=@ViewData["ClaimDate"] />
+                <span asp-validation-for="ClaimDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HoursWorked" class="control-label"></label>
+                <input asp-for="HoursWorked" class="form-control" readonly value=@ViewData["HoursWorked"] />
+                <span asp-validation-for="HoursWorked" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClaimExpenses" class="control-label"></label>
+                <input asp-for="ClaimExpenses" class="form-control" readonly value=@ViewData["CLaimExpenses"] />
+                <span asp-validation-for="ClaimExpenses" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <label asp-for="ClaimExpenses" class="control-label"></label>
+                <input asp-for="ClaimExpenses" class="form-control" readonly value=@ViewData["ClaimStatus"] />
+                <span asp-validation-for="ClaimExpenses" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserNav.UserName" class="control-label"></label>
+                <input asp-for="UserNav.UserName" class="form-control" readonly value=@ViewData["Username"] />
+                <span asp-validation-for="UserNav.UserName" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="DocumentBinary" value=@ViewData["DocumentBinary"] />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

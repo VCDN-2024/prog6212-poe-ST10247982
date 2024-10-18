@@ -1,6 +1,6 @@
 ﻿namespace POE_p2_s4.Models
 {
-    public class HR:User
+    public class HR:Admin
     {
     
         

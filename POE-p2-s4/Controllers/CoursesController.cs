@@ -139,7 +139,7 @@ namespace POE_p2_s4.Controllers
             {
                 try
                 {
-                    course.LastUpdated = DateTime.Now;  
+                    course.LastUpdated = DateTime.Now;
                     _context.Update(course);
                     await _context.SaveChangesAsync();
                 }

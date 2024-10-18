@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POE_p2_s4.Models
@@ -12,9 +13,14 @@ namespace POE_p2_s4.Models
         public DateTime ClaimDate { get; set; }
         public double HoursWorked { get; set; }
         public double? ClaimExpenses { get; set; }
+ 
+        public byte[]? DocumentBinary { get; set; }
         [NotMapped]
         public IFormFile? Document { get; set; }
         public string ClaimStatus { get; set; }
+        public string UserId { get; set; }
+     
+        public User? UserNav { get; set; }
 
         public bool calculateClaimRating()
         {

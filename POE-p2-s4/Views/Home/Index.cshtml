@@ -1,8 +1,39 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<POE_p2_s4.Models.User> UserManager
+@{
+    var user = await UserManager.GetUserAsync(User);
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    @if (user != null)
+    {
+        if (user.UserType == "Admin")
+        {
+            <p>Welcome Admin! You have full access to the system.</p>
+        }
+        else if (user.UserType == "HR")
+        {
+            <p>Welcome HR! You can manage employee claims and details.</p>
+        }
+        else if (user.UserType == "Lecturer")
+        {
+            <p>Welcome Lecturer! You can submit your claims here.</p>
+        }
+        else if (user.UserType == "ProgrammeCo_ordinator")
+        {
+            <p>Welcome Programme Coordinator! Manage course assignments and lecturer coordination.</p>
+        }
+        else if (user.UserType == "AcademicManager")
+        {
+            <p>Welcome Academic Manager! Oversee academic programs and lecturer performance.</p>
+        }
+    }
+    else
+    {
+        <p>Please log in to view your personalized dashboard.</p>
+    }
 </div>

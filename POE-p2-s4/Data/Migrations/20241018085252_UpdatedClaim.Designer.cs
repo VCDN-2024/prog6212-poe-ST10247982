@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POE_p2_s4.Data;
 
@@ -11,9 +12,11 @@ using POE_p2_s4.Data;
 namespace POE_p2_s4.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241018085252_UpdatedClaim")]
+    partial class UpdatedClaim
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,7 +192,6 @@ namespace POE_p2_s4.Data.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -480,13 +482,9 @@ namespace POE_p2_s4.Data.Migrations
 
             modelBuilder.Entity("POE_p2_s4.Models.Claim", b =>
                 {
-                    b.HasOne("POE_p2_s4.Models.User", "UserNav")
+                    b.HasOne("POE_p2_s4.Models.User", null)
                         .WithMany("Claims")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserNav");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("POE_p2_s4.Models.Course", b =>

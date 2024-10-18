@@ -2,7 +2,7 @@
 
 namespace POE_p2_s4.Models
 {
-    public class ProgrammeCo_ordinator:User
+    public class ProgrammeCo_ordinator:Admin
     {
         [Required]
         public string? Programme {  get; set; }
