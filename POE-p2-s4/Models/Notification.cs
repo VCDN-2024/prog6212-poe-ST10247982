@@ -7,6 +7,7 @@ namespace POE_p2_s4.Models
 
     public class Notification
     {
+        // This feature will be implemented in part 3 along with future features
         public string Id { get; set; }
         [Required,StringLength(50)]
         public string NotificationType { get; set; }
