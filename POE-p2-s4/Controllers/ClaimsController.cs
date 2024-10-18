@@ -37,21 +37,20 @@ namespace POE_p2_s4.Controllers
                 return Unauthorized(); // Ensure the user is logged in
             }
 
-            // Fetch the logged-in user based on the userId
+         \
             var user = await _context.Users.FindAsync(userId);
 
             if (user == null)
             {
-                return NotFound("User not found"); // Return error if user isn't found in the database
+                return NotFound("User not found"); 
             }
 
             // Start building the claims query
             var claimsQuery = _context.Claims.AsQueryable();
 
-            // Apply query filters based on the user's discriminator value (UserType)
+            
             if (user.UserType == "Lecturer")
             {
-                // Lecturers can see only their own claims
                 claimsQuery = claimsQuery.Where(c => c.UserId == user.Id);
             }
             else if (user.UserType == "Admin" || user.UserType == "HR" || user.UserType == "ProgrammeCo_ordinator" || user.UserType == "AcademicManager")
@@ -60,10 +59,8 @@ namespace POE_p2_s4.Controllers
                 claimsQuery = claimsQuery.Where(c => c.ClaimStatus == "Pending");
             }
 
-            // Pass the user type to the view for conditional rendering
             ViewData["UserType"] = user.UserType;
 
-            // Execute the query and return the result to the view
             List<Claim> claims = await claimsQuery.ToListAsync();
 
             return View(claims);
@@ -198,9 +195,11 @@ namespace POE_p2_s4.Controllers
             {
                 return NotFound();
             }
+            // Code Attribution
+            //Document-ByteArrays
+            //https://www.tutlane.com/article/csharp/csharp-convert-file-to-byte-array-with-examples
 
-            // Set the content type based on the document (e.g., PDF, Word, etc.)
-            string contentType = "application/octet-stream"; // Default binary type
+            string contentType = "application/octet-stream"; 
             var fileContent = claim.DocumentBinary;
 
             // Assuming you want to provide the file as an attachment download

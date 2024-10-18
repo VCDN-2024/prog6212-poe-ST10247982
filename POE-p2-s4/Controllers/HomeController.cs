@@ -38,18 +38,17 @@ namespace POE_p2_s4.Controllers
                    })
                    .ToList() ?? new List<Claim>();
 
-                // Safely calculate total claims and status counts
                 var totalClaims = claims.Count();
                 var approvedClaims = claims.Count(c => c.ClaimStatus == "Approved");
                 var rejectedClaims = claims.Count(c => c.ClaimStatus == "Rejected");
                 var pendingClaims = claims.Count(c => c.ClaimStatus == "Pending");
 
-                // Safely fetch courses for the user and initialize as an empty list if no courses are found
+       
                 var courses = _context.Courses
                     .Where(course => course.UserId == user.Id)
                     .ToList() ?? new List<Course>();
 
-                // Store data in ViewData for use in the view
+   
                 ViewData["Claims"] = claims;
                 ViewData["TotalClaims"] = totalClaims;
                 ViewData["ApprovedClaims"] = approvedClaims;
