@@ -13,14 +13,11 @@
 }
 
 <div class="text-center">
-
-
     <div class="user-info">
         @if (user != null)
         {
             <h2>Welcome @user.Email!</h2>
             <p>Your role: @user.UserType</p>
-
 
             @if (user.UserType == "Admin")
             {
@@ -29,6 +26,43 @@
             else if (user.UserType == "HR")
             {
                 <p>Welcome HR! You can manage employee claims and details.</p>
+
+                <div class="claims-section">
+                    <h3>Claims Overview:</h3>
+                    <!-- HR can view total claims summary -->
+                    <p>Total Claims: @totalClaims</p>
+                    <p>Approved: @approvedClaims</p>
+                    <p>Rejected: @rejectedClaims</p>
+                    <p>Pending: @pendingClaims</p>
+
+                    <!-- HR can see a detailed claims table -->
+                    @if (claims != null && claims.Count > 0)
+                    {
+                        <table class="table claims-table">
+                            <thead>
+                                <tr>
+                                    <th>Date Submitted</th>
+                                    <th>Claim Type</th>
+                                    <th>Claim Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var claim in claims)
+                                {
+                                    <tr>
+                                        <td>@claim.ClaimDate</td>
+                                        <td>@claim.ClaimType</td>
+                                        <td>@claim.ClaimStatus</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No claims available.</p>
+                    }
+                </div>
             }
             else if (user.UserType == "Lecturer")
             {
@@ -181,3 +215,4 @@
             background-color: yellow;
         }
     </style>
+</div>

@@ -24,10 +24,10 @@ namespace POE_p2_s4.Controllers
             // Attempt to get the user from UserManager
             var user = await _userManager.GetUserAsync(User);
 
-            // Check if the user is not null and is of type "Lecturer"
+            
             if (user != null && user.UserType == "Lecturer")
             {
-                // Safely fetch claims for the user and initialize as an empty list if no claims are found
+             
                 List<Claim> claims = _context.Claims
                    .Where(c => c.UserId == user.Id)
                    .Select(c => new Claim
@@ -58,10 +58,26 @@ namespace POE_p2_s4.Controllers
                 ViewData["User"] = user;
                 ViewData["Courses"] = courses;
             }
+            else if (user != null && user.UserType == "HR")
+            {
+     
+                var pendingClaims = await _context.Claims
+                    .Where(c => c.ClaimStatus == "Pending")
+                    .Select(c => new
+                    {
+                        UserEmail = _context.Users.FirstOrDefault(u => u.Id == c.UserId).Email,
+                        c.HoursWorked,
+                        c.ClaimType
+                    })
+                    .ToListAsync();
+
+          
+                ViewData["PendingClaims"] = pendingClaims;
+                ViewData["User"] = user; 
+            }
             else
             {
-                // Handle the case where the user is null or is not a lecturer (optional redirect or error message)
-                return RedirectToAction("Login", "Account");
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
 
             return View();
