@@ -37,7 +37,7 @@ namespace POE_p2_s4.Controllers
                 return Unauthorized(); // Ensure the user is logged in
             }
 
-         \
+         
             var user = await _context.Users.FindAsync(userId);
 
             if (user == null)
