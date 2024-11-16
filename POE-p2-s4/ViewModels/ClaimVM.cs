@@ -2,7 +2,7 @@
 
 namespace POE_p2_s4.ViewModels
 {
-    public class Claim
+    public class ClaimVM
     {
         public string ClaimType { get; set; }
         public string Description { get; set; }

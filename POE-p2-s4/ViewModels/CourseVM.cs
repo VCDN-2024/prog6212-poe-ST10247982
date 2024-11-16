@@ -2,7 +2,7 @@
 
 namespace POE_p2_s4.ViewModels
 {
-    public class Course
+    public class CourseVM
     {
         public string Name { get; set; }
         public string Department { get; set; }
