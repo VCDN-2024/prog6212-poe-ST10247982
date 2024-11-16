@@ -8,6 +8,7 @@
     var approvedClaims = ViewData["ApprovedClaims"] != null ? (int)ViewData["ApprovedClaims"] : 0;
     var rejectedClaims = ViewData["RejectedClaims"] != null ? (int)ViewData["RejectedClaims"] : 0;
     var pendingClaims = ViewData["PendingClaims"] != null ? (int)ViewData["PendingClaims"] : 0;
+    var pendingClaimsList = ViewData["PendingClaimsList"];
     User user = ViewData["User"] as POE_p2_s4.Models.User;
     var courses = ViewData["Courses"] as List<Course>;
 }

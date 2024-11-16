@@ -71,7 +71,7 @@ namespace POE_p2_s4.Controllers
                     .ToListAsync();
 
           
-                ViewData["PendingClaims"] = pendingClaims;
+                ViewData["PendingClaimsList"] = pendingClaims;
                 ViewData["User"] = user; 
             }
             else
