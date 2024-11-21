@@ -23,6 +23,7 @@ namespace POE_p2_s4.Validation
             RuleFor(claim => claim.ClaimDate).NotNull().WithMessage("Please enter a valid date");
             RuleFor(claim => claim.HoursWorked).GreaterThan(0).LessThan(40).NotNull().WithMessage("Please enter a valid work hour amount ");
             RuleFor(claim => claim.KilometersTravelled).GreaterThan(0).WithMessage("Please enter a distance greater than 0");
+            RuleFor(claim => claim.LeaveDays).GreaterThan(0).WithMessage("Please enter a value greater then 0 for days of leave");
             RuleFor(claim => claim)
                .Must(ValidateClaimAmount)
                .WithMessage(claim => $"The {claim.ClaimType} expense exceeds the allowable limit based on hours worked and hourly rate.");
@@ -43,12 +44,12 @@ namespace POE_p2_s4.Validation
             switch (claim.ClaimType)
             {
                 case "Food":
-                    return claim.ClaimExpenses <=(double) (maxAllowableExpense * _foodExpenseMultiplier);
+                    return claim.ClaimExpenses <=(double) (maxAllowableExpense * _foodExpenseMultiplier + maxAllowableExpense);
 
                 case "Travel":
-                    return claim.ClaimExpenses <=(double) (maxAllowableExpense *  claim.KilometersTravelled);
+                    return claim.ClaimExpenses <=(double) (maxAllowableExpense *  claim.KilometersTravelled +maxAllowableExpense);
                 case "Leave":
-                    return claim.ClaimExpenses <= (double)(maxAllowableExpense);
+                    return claim.ClaimExpenses <= (double)(maxAllowableExpense *claim.LeaveDays+ maxAllowableExpense);
                 
                 default:
                     
