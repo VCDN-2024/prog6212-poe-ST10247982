@@ -55,7 +55,7 @@ namespace POE_p2_s4.Controllers
             if (user.UserType == "Lecturer")
             {
                 claimsQuery = claimsQuery.Where(c => c.UserId == user.Id);
-                ViewBag.ClaimTypeOptions = new SelectList(Enum.GetValues(typeof(ClaimType)));
+             
             }
             else if (user.UserType == "Admin" || user.UserType == "HR" || user.UserType == "ProgrammeCo_ordinator" || user.UserType == "AcademicManager")
             {
@@ -92,6 +92,7 @@ namespace POE_p2_s4.Controllers
         public IActionResult Create()
         {
             ViewBag.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewBag.ClaimTypeOptions = new SelectList(Enum.GetValues(typeof(ClaimType)));
             ViewData["ClaimStatus"] = "Pending";
             return View();
         }
@@ -103,7 +104,7 @@ namespace POE_p2_s4.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create( ClaimVM claimVM)
         {
-            Lecturer user =(Lecturer) await _context.Users.FirstOrDefaultAsync(u => u.Id == claim.UserId);
+            Lecturer user =(Lecturer) await _context.Users.FirstOrDefaultAsync(u => u.Id == claimVM.UserId);
             if (User == null)
             {
                 ModelState.AddModelError("User", "User not found in the database!");
@@ -112,10 +113,10 @@ namespace POE_p2_s4.Controllers
             Claim claim = new Claim
             {
 
-            }
+            };
 
             ClaimValidation validator = new ClaimValidation((decimal)user.HourlyRate);
-            ValidationResult results = validator.Validate()
+            ValidationResult results = validator.Validate(claim);
             if (claim != null)
             {
               

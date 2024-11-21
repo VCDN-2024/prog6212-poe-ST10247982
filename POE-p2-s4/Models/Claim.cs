@@ -13,7 +13,7 @@ namespace POE_p2_s4.Models
         public DateTime ClaimDate { get; set; }
         public double HoursWorked { get; set; }
         public double? ClaimExpenses { get; set; }
- 
+        public int? LeaveDays { get; set; }
         public byte[]? DocumentBinary { get; set; }
         [NotMapped]
         public IFormFile? Document { get; set; }
