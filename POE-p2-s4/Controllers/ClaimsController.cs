@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using POE_p2_s4.Data;
 using POE_p2_s4.Models;
+using POE_p2_s4.Validation;
+using POE_p2_s4.ViewModels;
 using Claim = POE_p2_s4.Models.Claim;
 
 namespace POE_p2_s4.Controllers
@@ -52,6 +55,7 @@ namespace POE_p2_s4.Controllers
             if (user.UserType == "Lecturer")
             {
                 claimsQuery = claimsQuery.Where(c => c.UserId == user.Id);
+                ViewBag.ClaimTypeOptions = new SelectList(Enum.GetValues(typeof(ClaimType)));
             }
             else if (user.UserType == "Admin" || user.UserType == "HR" || user.UserType == "ProgrammeCo_ordinator" || user.UserType == "AcademicManager")
             {
@@ -97,8 +101,21 @@ namespace POE_p2_s4.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClaimType,Description,ClaimDate,HoursWorked,ClaimExpenses,ClaimStatus,UserId,Document")] Claim claim)
+        public async Task<IActionResult> Create( ClaimVM claimVM)
         {
+            Lecturer user =(Lecturer) await _context.Users.FirstOrDefaultAsync(u => u.Id == claim.UserId);
+            if (User == null)
+            {
+                ModelState.AddModelError("User", "User not found in the database!");
+                return RedirectToAction(nameof(HomeController.Index));
+            }
+            Claim claim = new Claim
+            {
+
+            }
+
+            ClaimValidation validator = new ClaimValidation((decimal)user.HourlyRate);
+            ValidationResult results = validator.Validate()
             if (claim != null)
             {
               

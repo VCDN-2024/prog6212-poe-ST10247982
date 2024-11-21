@@ -11,8 +11,8 @@ namespace POE_p2_s4.Validation
         private readonly decimal _hourlyRate;
 
      
-        private readonly decimal _foodExpenseMultiplier = 0.2m;  
-        private readonly decimal _petrolExpenseMultiplier = 0.4m;
+        private readonly decimal _foodExpenseMultiplier = 0.4m;  
+        private readonly decimal _petrolExpenseMultiplier = 0.8m;
         public ClaimValidation(decimal HourlYRate)
         {
             _hourlyRate = HourlYRate;
@@ -42,7 +42,7 @@ namespace POE_p2_s4.Validation
                 case "Food":
                     return claim.ClaimExpenses <=(double) (maxAllowableExpense * _foodExpenseMultiplier);
 
-                case "Petrol":
+                case "Travel":
                     return claim.ClaimExpenses <=(double) (maxAllowableExpense * _petrolExpenseMultiplier);
 
                 default:

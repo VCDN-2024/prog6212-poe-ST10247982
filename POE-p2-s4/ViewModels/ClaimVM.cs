@@ -2,6 +2,7 @@
 
 namespace POE_p2_s4.ViewModels
 {
+    [NotMapped]
     public class ClaimVM
     {
         public string ClaimType { get; set; }
