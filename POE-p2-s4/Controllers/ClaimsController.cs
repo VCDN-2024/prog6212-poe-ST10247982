@@ -112,11 +112,23 @@ namespace POE_p2_s4.Controllers
             }
             Claim claim = new Claim
             {
+                Id = Guid.NewGuid().ToString(),
+                ClaimType = claimVM.ClaimType,
+                LeaveDays = claimVM.LeaveDays,
+                KilometersTravelled = claimVM.KilometersTravelled,
+                ClaimExpenses = claimVM.ClaimExpenses,
 
             };
 
             ClaimValidation validator = new ClaimValidation((decimal)user.HourlyRate);
             ValidationResult results = validator.Validate(claim);
+            if (!results.IsValid)
+            {
+                foreach(var failure in results.Errors)
+                {
+            //        ModelState.AddModelError();
+                }
+            }
             if (claim != null)
             {
               
