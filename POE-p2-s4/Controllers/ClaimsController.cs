@@ -126,13 +126,18 @@ namespace POE_p2_s4.Controllers
             {
                 foreach(var failure in results.Errors)
                 {
-            //        ModelState.AddModelError();
+               ModelState.AddModelError(failure.PropertyName,failure.ErrorMessage);
                 }
             }
-            if (claim != null)
+            if (!ModelState.IsValid)
             {
-              
-                claim.Id = Guid.NewGuid().ToString();
+
+                return View(claim);
+            }
+            if (claim == null)
+            {
+                ModelState.AddModelError("Claim", "Missing details for the claim, please re-enter your details.");
+            }
                 if(claim.Document!=null && claim.Document.Length > 0)
                 {
                     try
@@ -151,11 +156,8 @@ namespace POE_p2_s4.Controllers
                 _context.Add(claim);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                ModelState.AddModelError("Claim", "Missing details for the claim, please re-enter your details.");
-            }
+            
+           
             return View(claim);
         }
 
