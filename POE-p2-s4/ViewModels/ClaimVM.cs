@@ -10,7 +10,8 @@ namespace POE_p2_s4.ViewModels
         public DateTime ClaimDate { get; set; }
         public double HoursWorked { get; set; }
         public double? ClaimExpenses { get; set; }
-
+        public int? LeaveDays { get; set; }
+        public int? KilometersTravelled { get; set; }
         public byte[]? DocumentBinary { get; set; }
  
         public IFormFile? Document { get; set; }
