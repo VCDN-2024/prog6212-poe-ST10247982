@@ -14,6 +14,7 @@ namespace POE_p2_s4.Models
         public double HoursWorked { get; set; }
         public double? ClaimExpenses { get; set; }
         public int? LeaveDays { get; set; }
+        public int? KilometersTravelled { get; set; }
         public byte[]? DocumentBinary { get; set; }
         [NotMapped]
         public IFormFile? Document { get; set; }
