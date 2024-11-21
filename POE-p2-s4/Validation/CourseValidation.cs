@@ -8,9 +8,9 @@ namespace POE_p2_s4.Validation
         public CourseValidation()
         {
            
-            RuleFor(course => course.Name).Length(3, 50).NotNull().WithMessage("Please enter a {PropertyName} name with {Minlength} - {MaxLength} character);
+            RuleFor(course => course.Name).Length(3, 50).NotNull().WithMessage("Please enter a {PropertyName} name with {Minlength} - {MaxLength} character");
             RuleFor(course => course.Department).Length(3, 50).NotNull().WithMessage("Please enter a {PropertyName} name with {Minlength} - {MaxLength} character");
-            RuleFor(course => course.UserId).Length(255).NotNull().WithMessage("No {PropertyName} associated with this course. ");
+            RuleFor(course => course.UserId).Length(33,50).NotNull().WithMessage("No {PropertyName} associated with this course. ");
  
         }
     }
