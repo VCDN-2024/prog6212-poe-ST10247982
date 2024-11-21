@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using POE_p2_s4.Data;
-using POE_p2_s4.Validation;
-using FluentValidation.Results;
 using POE_p2_s4.Models;
 using Claim = POE_p2_s4.Models.Claim;
 
