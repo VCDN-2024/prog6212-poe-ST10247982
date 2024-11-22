@@ -12,7 +12,7 @@ namespace POE_p2_s4.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Payment> Payments { get; set; }
-     
+        public DbSet<Invoice> Invoices { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

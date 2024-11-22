@@ -1,24 +1,28 @@
-﻿using POE_p2_s4.Data.Migrations;
+﻿using POE_p2_s4.Data;
+using POE_p2_s4.Data.Migrations;
 using POE_p2_s4.Models;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using System.Security.Claims;
 
 namespace POE_p2_s4.Services
 {
     public class ReportGenerator : IReportGenerator
     {
-     public Invoice _invoice { get; }
-
-        public ReportGenerator(Invoice invoice)
+        public Invoice _invoice { get; }
+        public readonly ApplicationDbContext _context;
+        public ReportGenerator(Invoice invoice, ApplicationDbContext context)
         {
             _invoice = invoice;
+            _context = context;
         }
 
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
         public DocumentSettings GetSettings() => DocumentSettings.Default;
 
-        public void Compose(IDocumentContainer container){
+        public void Compose(IDocumentContainer container)
+        {
             container
                 .Page(page =>
                 {
@@ -48,7 +52,7 @@ namespace POE_p2_s4.Services
                 row.ConstantItem(100).Height(50).Placeholder();
             });
         }
-        
+
         public void ComposeContent(IContainer container)
         {
             container
@@ -59,15 +63,83 @@ namespace POE_p2_s4.Services
             .AlignMiddle()
             .Text("Content").FontSize(16);
         }
-       public void ComposeTable(IContainer container)
+        public void ComposeTable(IContainer container)
         {
-            container
-                .Height(250)
-                .Background(Colors.Grey.Lighten3)
-                .AlignCenter()
-                .AlignMiddle()
-                .Text("Table").FontSize(16);
-        }
+            container.Table(table =>
+            {
+                // step 1
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.ConstantColumn(25);
+                    columns.RelativeColumn(3);
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    switch (_invoice.Claims[0].ClaimType)
+                    {
+                        case "Travel":
+                            columns.RelativeColumn();
+                            break;
+                        case "Leave":
+                            columns.RelativeColumn();
+                            break;
+                    }
+                });
 
+                // step 2
+                table.Header(header =>
+                {
+                    header.Cell().Element(CellStyle).Text("#");
+                    header.Cell().Element(CellStyle).Text("Claim type");
+                    header.Cell().Element(CellStyle).AlignRight().Text("Description");
+                    header.Cell().Element(CellStyle).AlignRight().Text("Claim date");
+                    header.Cell().Element(CellStyle).AlignRight().Text("Email");
+                    switch (_invoice.Claims[0].ClaimType)
+                    {
+                        case "Travel":
+                            header.Cell().Element(CellStyle).AlignRight().Text("Kilometers travelled");
+                            break;
+                        case "Leave":
+                            header.Cell().Element(CellStyle).AlignRight().Text("Leave days");
+                            break;
+                    }
+                    header.Cell().Element(CellStyle).AlignRight().Text("Claim Expenses");
+                    static IContainer CellStyle(IContainer container)
+                    {
+                        return container.DefaultTextStyle(x => x.SemiBold()).PaddingVertical(5).BorderBottom(1).BorderColor(Colors.Black);
+                    }
+                });
+
+                // step 3
+                int count = 0;
+                foreach (var claim in _invoice.Claims)
+                {
+                    Lecturer lecturer = (Lecturer)_context.Users.FirstOrDefault(u => u.Id == claim.UserId);
+                    table.Cell().Element(CellStyle).Text(count++);
+                    table.Cell().Element(CellStyle).Text(claim.ClaimType);
+
+                    table.Cell().Element(CellStyle).AlignRight().Text(claim.Description);
+                    table.Cell().Element(CellStyle).AlignRight().Text($"{claim.ClaimDate}");
+                    table.Cell().Element(CellStyle).AlignRight().Text($"{lecturer.Email}");
+                    switch (claim.ClaimType)
+                    {
+                        case "Travel":
+                            table.Cell().Element(CellStyle).AlignRight().Text($"{claim.KilometersTravelled}");
+                            break;
+                        case "Leave":
+                            table.Cell().Element(CellStyle).AlignRight().Text($"{claim.LeaveDays}");
+                            break;
+                    }
+                    table.Cell().Element(CellStyle).AlignRight().Text($"R {claim.ClaimExpenses}");
+
+                    static IContainer CellStyle(IContainer container)
+                    {
+                        return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
+                    }
+                }
+            });
+
+        }
     }
 }
