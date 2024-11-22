@@ -18,10 +18,12 @@ namespace POE_p2_s4.Controllers
         {
             _context = context;
         }
+        
         public IActionResult GenerateReport(string ClaimType)
         {
             var claimsQueryable = _context.Claims.AsQueryable();
-            List<Claim> claims = claimsQueryable.Where(claim => claim.ClaimType.Equals(ClaimType)).ToList();
+            List<Claim> claims = claimsQueryable.Where(claim => claim.ClaimType==ClaimType).ToList();
+
             if (claims.Count < 1)
             {
 
@@ -52,8 +54,11 @@ namespace POE_p2_s4.Controllers
 
                 
                 invoice.PDFArray = pdfBytes;
+                string fileName = $"{invoice.Id}.pdf"; 
 
-               
+              
+                return File(invoice.PDFArray, "application/pdf", fileName);
+
             }
               ValidationResult results = validator.Validate(invoice);
             if(!results.IsValid)
@@ -64,8 +69,8 @@ namespace POE_p2_s4.Controllers
                 }
                 return RedirectToAction(nameof(Index), "Home");
             }
-            report.GeneratePdf();
-            return View();
+            report.GeneratePdfAndShow();
+            return RedirectToAction(nameof(Index),"Home");
         }
 
     }

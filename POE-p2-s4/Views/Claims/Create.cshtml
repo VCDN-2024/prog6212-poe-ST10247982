@@ -58,8 +58,8 @@
             <!-- Claim Expenses (Read-Only) -->
             <div class="form-group">
                 <label asp-for="ClaimExpenses" class="control-label"></label>
-                <input asp-for="ClaimExpenses" class="form-control" id="claimExpenses" />
-                <input asp-for="ClaimExpenses" type="hidden" />
+                <input asp-for="ClaimExpenses" step="0.01" class="form-control" id="ClaimExpenses" />
+               
                 <span asp-validation-for="ClaimExpenses" class="text-danger"></span>
             </div>
 
@@ -102,23 +102,26 @@
             const travelDistanceInput = $('#travelDistanceInput');
             const claimExpensesInput = $('#claimExpenses');
 
-         
+
             function updateClaimExpenses() {
                 const claimType = claimTypeDropdown.val();
                 const hoursWorked = parseFloat(hoursWorkedInput.val()) || 0;
 
                 if (claimType === 'Leave') {
                     const leaveDays = parseFloat(leaveDaysInput.val()) || 0;
-                    baseExpense = (hoursWorked * hourlyRate) + (leaveDays * hourlyRate);
+                    baseExpense = (hoursWorked * hourlyRate) + (leaveDays * hourlyRate*8);
                 } else if (claimType === 'Travel') {
                     const distanceTravelled = parseFloat(travelDistanceInput.val()) || 0;
-                    baseExpense = (hoursWorked * hourlyRate) + (distanceTravelled * 23); 
+                    baseExpense = (hoursWorked * hourlyRate) + (distanceTravelled * 23);
                 } else if (claimType === 'Food') {
                     baseExpense = (hoursWorked * hourlyRate) * (1 + foodMultiplier);
                 }
 
-                // Update the Claim Expenses input
+
                 claimExpensesInput.val(baseExpense.toFixed(2));
+
+               
+                $('input[name="ClaimExpenses"]').val(baseExpense.toFixed(2));
             }
 
             // Show/Hide fields based on Claim Type selection
@@ -141,7 +144,7 @@
                 updateClaimExpenses();
             });
 
-            // Update expenses on user input
+        
             hoursWorkedInput.on('input', updateClaimExpenses);
             leaveDaysInput.on('input', updateClaimExpenses);
             travelDistanceInput.on('input', updateClaimExpenses);

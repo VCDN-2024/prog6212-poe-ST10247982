@@ -60,11 +60,17 @@ namespace POE_p2_s4.Controllers
             else if (user.UserType == "Admin" || user.UserType == "HR" || user.UserType == "ProgrammeCo_ordinator" || user.UserType == "AcademicManager")
             {
                 // Admins, HR, Programme Coordinators, and Academic Managers can see pending claims
-                claimsQuery = claimsQuery.Where(c => c.ClaimStatus == "Pending");
+                claimsQuery = claimsQuery.Where(c => c.ClaimStatus == "Pending"||c.ClaimStatus=="Approved"||c.ClaimStatus=="Rejected");
             }
+            var distinctClaimTypes = _context.Claims
+                                     .Select(c => c.ClaimType)
+                                     .Distinct()
+                                     .ToList();
 
+
+            ViewBag.ClaimTypes = distinctClaimTypes;
             ViewData["UserType"] = user.UserType;
-
+            ViewData["UserId"] = user.Id;
             List<Claim> claims = await claimsQuery.ToListAsync();
 
             return View(claims);

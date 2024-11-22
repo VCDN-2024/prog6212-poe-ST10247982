@@ -2,65 +2,213 @@
 
 @{
     ViewData["Title"] = "Index";
-
 }
 
 <h1>Index</h1>
 
-@if ( ViewData["UserType"].ToString() == "Lecturer")
+@if (ViewData["UserType"].ToString() == "Lecturer")
 {
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
-    </p>
-}
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.ClaimType)</th>
-            <th>@Html.DisplayNameFor(model => model.Description)</th>
-            <th>@Html.DisplayNameFor(model => model.ClaimDate)</th>
-            <th>@Html.DisplayNameFor(model => model.HoursWorked)</th>
-            <th>@Html.DisplayNameFor(model => model.ClaimExpenses)</th>
-            <th>Document</th>
-            <th>@Html.DisplayNameFor(model => model.ClaimStatus)</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <h2>Your Claims</h2>
+    <table class="table">
+        <thead>
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.ClaimType)</td>
-                <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                <td>@Html.DisplayFor(modelItem => item.ClaimDate)</td>
-                <td>@Html.DisplayFor(modelItem => item.HoursWorked)</td>
-                <td>@Html.DisplayFor(modelItem => item.ClaimExpenses)</td>
-                <td>
-                    @if (item.DocumentBinary != null && item.DocumentBinary.Length > 0)
-                    {
-                        <a asp-action="DownloadDocument" asp-route-id="@item.Id">Download Document</a>
-                    }
-                    else
-                    {
-                        <span>No document attached</span>
-                    }
-                </td>
-                <td>@Html.DisplayFor(modelItem => item.ClaimStatus)</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a>
+                <th>@Html.DisplayNameFor(model => model.ClaimType)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimDate)</th>
+                <th>@Html.DisplayNameFor(model => model.HoursWorked)</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimExpenses)</th>
+                <th>Document</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimStatus)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Where(claim => claim.UserId == @ViewData["UserId"])) 
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimType)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.HoursWorked)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimExpenses)</td>
+                    <td>
+                        @if (item.DocumentBinary != null && item.DocumentBinary.Length > 0)
+                        {
+                            <a asp-action="DownloadDocument" asp-route-id="@item.Id">Download Document</a>
+                        }
+                        else
+                        {
+                            <span>No document attached</span>
+                        }
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimStatus)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a>
 
-                    @if (ViewData["UserType"].ToString() == "Admin" || ViewData["UserType"].ToString() == "HR" || ViewData["UserType"].ToString() == "ProgrammeCo_ordinator" || ViewData["UserType"].ToString() == "AcademicManager")
-                    {
                         @if (item.ClaimStatus == "Pending")
                         {
                             <a asp-action="Approve" asp-route-id="@item.Id" class="btn btn-success">Approve</a>
                             <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-danger">Reject</a>
                         }
-                    }
-                </td>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a asp-action="Create" class="btn btn-primary mb-3">Create New Claim</a>
+}
+
+ @if (ViewData["UserType"].ToString() == "Admin" ||
+    ViewData["UserType"].ToString() == "HR" ||
+    ViewData["UserType"].ToString() == "AcademicManager")
+{
+        
+
+    <div>
+        <label for="claimTypeSelect">Select Claim Type:</label>
+        <select id="claimTypeSelect" class="form-select">
+            @foreach (var claimType in ViewBag.ClaimTypes)
+            {
+                <option value="@claimType">@claimType</option>
+            }
+        </select>
+        <button id="generatePdfBtn" class="btn btn-primary">Generate PDF</button>
+    </div>
+
+    <script>
+        document.getElementById('generatePdfBtn').addEventListener('click', function () {
+            var selectedType = document.getElementById('claimTypeSelect').value;
+            var generateUrl = '@Url.Action("GenerateReport", "Invoices")' + '?ClaimType=' + selectedType;
+            window.location.href = generateUrl;
+        });
+    </script>
+}
+
+@if (ViewData["UserType"].ToString() != "Lecturer")
+{
+    <h2>Pending Claims</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.ClaimType)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimDate)</th>
+                <th>@Html.DisplayNameFor(model => model.HoursWorked)</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimExpenses)</th>
+                <th>Document</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimStatus)</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Where(claim => claim.ClaimStatus == "Pending"))
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimType)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.HoursWorked)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimExpenses)</td>
+                    <td>
+                        @if (item.DocumentBinary != null && item.DocumentBinary.Length > 0)
+                        {
+                            <a asp-action="DownloadDocument" asp-route-id="@item.Id">Download Document</a>
+                        }
+                        else
+                        {
+                            <span>No document attached</span>
+                        }
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimStatus)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a>
+
+                        @if (item.ClaimStatus == "Pending")
+                        {
+                            <a asp-action="Approve" asp-route-id="@item.Id" class="btn btn-success">Approve</a>
+                            <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-danger">Reject</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Approved Claims</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.ClaimType)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimDate)</th>
+                <th>@Html.DisplayNameFor(model => model.HoursWorked)</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimExpenses)</th>
+                <th>Document</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimStatus)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Where(claim => claim.ClaimStatus == "Approved"))
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimType)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.HoursWorked)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimExpenses)</td>
+                    <td>
+                        @if (item.DocumentBinary != null && item.DocumentBinary.Length > 0)
+                        {
+                            <a asp-action="DownloadDocument" asp-route-id="@item.Id">Download Document</a>
+                        }
+                        else
+                        {
+                            <span>No document attached</span>
+                        }
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimStatus)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Rejected Claims</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.ClaimType)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimDate)</th>
+                <th>@Html.DisplayNameFor(model => model.HoursWorked)</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimExpenses)</th>
+                <th>Document</th>
+                <th>@Html.DisplayNameFor(model => model.ClaimStatus)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Where(claim => claim.ClaimStatus == "Rejected"))
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimType)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.HoursWorked)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimExpenses)</td>
+                    <td>
+                        @if (item.DocumentBinary != null && item.DocumentBinary.Length > 0)
+                        {
+                            <a asp-action="DownloadDocument" asp-route-id="@item.Id">Download Document</a>
+                        }
+                        else
+                        {
+                            <span>No document attached</span>
+                        }
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.ClaimStatus)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

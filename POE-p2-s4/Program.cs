@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using POE_p2_s4.Data;
 using POE_p2_s4.Models;
 using QuestPDF.Infrastructure;
+using System.Globalization;
 
 namespace POE_p2_s4
 {
@@ -21,7 +22,9 @@ namespace POE_p2_s4
             {
                 options.MultipartBodyLengthLimit = 10485760; 
             });
-        
+            var cultureInfo = new CultureInfo("en-US");  // Use "en-US" for period separator
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
             builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();

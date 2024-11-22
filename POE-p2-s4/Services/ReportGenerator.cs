@@ -8,7 +8,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
-{
+namespace POE_p2_s4.Services{
     public class ReportGenerator : IDocument
     {
         public Invoice _invoice { get; }
@@ -28,9 +28,15 @@ using QuestPDF.Infrastructure;
                 .Page(page =>
                 {
                     page.Margin(50);
-                    page.Header().Height(100).Background(Colors.Grey.Lighten1);
-                    page.Content().Background(Colors.Grey.Lighten3);
-                    page.Footer().Height(50).Background(Colors.Grey.Lighten1);
+
+                    
+                    page.Header().Height(100).Background(Colors.Grey.Lighten1).Element(ComposeHeader);
+
+                
+                    page.Content().Background(Colors.Grey.Lighten3).Element(ComposeContent);
+
+                 
+                    page.Footer().Height(50).Background(Colors.Grey.Lighten1).AlignCenter().Text("Footer Content Here");
 
                 });
         }

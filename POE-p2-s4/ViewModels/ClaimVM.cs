@@ -8,8 +8,8 @@ namespace POE_p2_s4.ViewModels
         public string ClaimType { get; set; }
         public string Description { get; set; }
         public DateTime ClaimDate { get; set; }
-        public double HoursWorked { get; set; }
-        public double? ClaimExpenses { get; set; }
+        public decimal HoursWorked { get; set; }
+        public decimal? ClaimExpenses { get; set; }
         public int? LeaveDays { get; set; }
         public int? KilometersTravelled { get; set; }
         public byte[]? DocumentBinary { get; set; }

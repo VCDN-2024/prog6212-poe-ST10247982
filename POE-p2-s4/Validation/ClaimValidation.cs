@@ -48,7 +48,7 @@ namespace POE_p2_s4.Validation
             if (claim.HoursWorked<=40 && claim.HoursWorked>0)
             {
                 
-                return false;
+                return true;
             }
 
           
@@ -57,12 +57,12 @@ namespace POE_p2_s4.Validation
             switch (claim.ClaimType)
             {
                 case "Food":
-                    return claim.ClaimExpenses<= (double)(maxAllowableExpense*(1+_foodExpenseMultiplier));
+                    return claim.ClaimExpenses<= (maxAllowableExpense*(1+_foodExpenseMultiplier));
 
                 case "Travel":
-                    return claim.ClaimExpenses <=(double)(maxAllowableExpense * (claim.KilometersTravelled *fuel));
+                    return claim.ClaimExpenses <=(maxAllowableExpense * (claim.KilometersTravelled *fuel));
                 case "Leave":
-                    return claim.ClaimExpenses <=(double)(maxAllowableExpense+(claim.LeaveDays*8*_hourlyRate));
+                    return claim.ClaimExpenses <=(maxAllowableExpense + (claim.LeaveDays * 8 * _hourlyRate));
                 default:
                     
                     return false;
