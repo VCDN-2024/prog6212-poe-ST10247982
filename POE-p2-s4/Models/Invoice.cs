@@ -11,6 +11,7 @@ namespace POE_p2_s4.Models
       public string Title { get; set; }
       public DateTime CreatedDate { get; set; }
       public bool IsPaymentMade { get; set; }
+      public byte[] PDFArray { get; set; }
       [NotMapped]
       public List<Claim> Claims { get; set; }
       public string UserId { get; set; }   
