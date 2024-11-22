@@ -59,7 +59,15 @@ namespace POE_p2_s4.Services
             .AlignMiddle()
             .Text("Content").FontSize(16);
         }
-
+       public void ComposeTable(IContainer container)
+        {
+            container
+                .Height(250)
+                .Background(Colors.Grey.Lighten3)
+                .AlignCenter()
+                .AlignMiddle()
+                .Text("Table").FontSize(16);
+        }
 
     }
 }
