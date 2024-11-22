@@ -11,6 +11,9 @@ using QuestPDF.Infrastructure;
 namespace POE_p2_s4.Services{
     public class ReportGenerator : IDocument
     {
+        // code attribution
+        // https://www.questpdf.com/quick-start.html
+
         public Invoice _invoice { get; }
         public readonly ApplicationDbContext _context;
         public ReportGenerator(Invoice invoice, ApplicationDbContext context)

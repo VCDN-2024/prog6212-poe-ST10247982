@@ -8,6 +8,9 @@ namespace POE_p2_s4.Validation
 {
     public class ClaimValidation:AbstractValidator<Claim>
     {
+        //code attribution
+        //https://docs.fluentvalidation.net/en/latest/
+
         private readonly decimal _hourlyRate;
        private const int maxFileSize = 5 * 1024 * 1024;
         private readonly decimal fuel = 23.00m;
