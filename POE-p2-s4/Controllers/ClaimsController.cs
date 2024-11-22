@@ -282,6 +282,31 @@ namespace POE_p2_s4.Controllers
             }
          return   RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> Reject(string id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            Claim claim = await _context.Claims.FirstOrDefaultAsync(claim => claim.Id == id);
+            if (claim == null)
+            {
+                return NotFound();
+            }
+            claim.ClaimStatus = "Reject";
+            try
+            {
+                _context.Claims.Update(claim);
+                _context.SaveChanges();
+
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                ModelState.AddModelError("Update", "We are unable to update the claim right now, please try again later");
+
+            }
+            return RedirectToAction(nameof(Index));
+        }
         private bool ClaimExists(string id)
         {
             return _context.Claims.Any(e => e.Id == id);
