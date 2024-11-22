@@ -9,9 +9,6 @@
         public string hrId { get; set; }
         public HR authorizedBy { get; set; }
     
-       public void ProcessPayment()
-        {
-
-        }
+     
     }
 }
