@@ -29,5 +29,26 @@ namespace POE_p2_s4.Services
 
                 });
         }
+        public void ComposeHeader(IContainer container)
+        {
+            var titleStyle = TextStyle.Default.FontSize(24).SemiBold().FontColor(Colors.Green.Medium).FontSize(24);
+            container.Row(row =>
+            {
+                row.RelativeItem().Column(column =>
+                {
+                    column.Item().Text($"Invoice Id:{_invoice.Id}").Style(titleStyle);
+                    column.Item().Text(text =>
+                    {
+                        text.Span("Issue date: ").SemiBold();
+                        text.Span($"{_invoice.CreatedDate:d}");
+                    });
+
+
+                });
+                row.ConstantItem(100).Height(50).Placeholder();
+            });
+        }
+
+
     }
 }
