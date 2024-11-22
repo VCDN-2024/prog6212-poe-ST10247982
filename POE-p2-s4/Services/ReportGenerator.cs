@@ -55,13 +55,19 @@ namespace POE_p2_s4.Services
 
         public void ComposeContent(IContainer container)
         {
-            container
-            .PaddingVertical(40)
-            .Height(250)
-            .Background(Colors.Grey.Lighten3)
-            .AlignCenter()
-            .AlignMiddle()
-            .Text("Content").FontSize(16);
+            container.PaddingVertical(40).Column(column =>
+            {
+                column.Spacing(5);
+
+               
+
+                column.Item().Element(ComposeTable);
+
+                var totalPrice = _invoice.Claims.Sum(x => x.ClaimExpenses * _invoice.Claims.Count );
+                column.Item().AlignRight().Text($"Cost to company: R {totalPrice}").FontSize(14);
+
+                
+            });
         }
         public void ComposeTable(IContainer container)
         {
