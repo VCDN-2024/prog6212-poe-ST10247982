@@ -1,14 +1,15 @@
 ﻿using POE_p2_s4.Data;
 using POE_p2_s4.Data.Migrations;
 using POE_p2_s4.Models;
+
+using System.Security.Claims;
+using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System.Security.Claims;
 
-namespace POE_p2_s4.Services
 {
-    public class ReportGenerator : IReportGenerator
+    public class ReportGenerator : IDocument
     {
         public Invoice _invoice { get; }
         public readonly ApplicationDbContext _context;

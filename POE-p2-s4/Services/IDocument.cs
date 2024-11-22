@@ -2,7 +2,7 @@
 
 namespace POE_p2_s4.Services
 {
-    public interface IReportGenerator
+    public interface IDocument
     {
         DocumentMetadata GetMetadata();
         DocumentSettings GetSettings();
