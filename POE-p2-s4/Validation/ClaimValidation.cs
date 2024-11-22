@@ -10,7 +10,7 @@ namespace POE_p2_s4.Validation
     {
         private readonly decimal _hourlyRate;
         const int maxFileSize = 5 * 1024 * 1024;
-
+        private readonly decimal fuel = 23.00m;
         private readonly decimal _foodExpenseMultiplier = 0.4m;  
  
         
@@ -27,11 +27,11 @@ namespace POE_p2_s4.Validation
            
             RuleFor(claim => claim)
                 .Must(ValidateDocumentBinary)
-                .WithMessage(claim => $"The document is bigger than {maxFileSize}!").When(claim => claim.DocumentBinary.Length > 0);
+                .WithMessage(claim => $"The document is bigger than {maxFileSize}!").When(claim => claim.DocumentBinary != null);
 
             RuleFor(claim => claim)
                .Must(ValidateClaimAmount)
-               .WithMessage(claim => $"The {claim.ClaimType} expense exceeds the allowable limit based on hours worked and hourly rate.");
+               .WithMessage(claim => $"The {claim.ClaimType} expense exceeds the allowable limit based on hours worked and hourly rate. Amount: {claim.ClaimExpenses} ");
 
 
         }
@@ -57,13 +57,12 @@ namespace POE_p2_s4.Validation
             switch (claim.ClaimType)
             {
                 case "Food":
-                    return claim.ClaimExpenses <=(double) (maxAllowableExpense * _foodExpenseMultiplier + maxAllowableExpense);
+                    return claim.ClaimExpenses<= (double)(maxAllowableExpense*(1+_foodExpenseMultiplier));
 
                 case "Travel":
-                    return claim.ClaimExpenses <=(double) (maxAllowableExpense *  claim.KilometersTravelled +maxAllowableExpense);
+                    return claim.ClaimExpenses <=(double)(maxAllowableExpense * (claim.KilometersTravelled *fuel));
                 case "Leave":
-                    return claim.ClaimExpenses <= (double)(maxAllowableExpense *claim.LeaveDays+ maxAllowableExpense);
-                
+                    return claim.ClaimExpenses <=(double)(maxAllowableExpense+(claim.LeaveDays*8*_hourlyRate));
                 default:
                     
                     return false;

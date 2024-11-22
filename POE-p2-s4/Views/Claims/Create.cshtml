@@ -1,8 +1,8 @@
-﻿@model POE_p2_s4.Models.Claim
+﻿@model POE_p2_s4.ViewModels.ClaimVM
 
 @{
     ViewData["Title"] = "Create";
-    
+    Lecturer UserDetails = ViewBag.User;
 }
 
 <h1>Create</h1>
@@ -14,31 +14,56 @@
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+            <!-- Claim Type Dropdown -->
             <div class="form-group">
                 <label asp-for="ClaimType" class="control-label"></label>
-                <select asp-for="ClaimType" class="form-control" asp-items="ViewBag.ClaimTypeOptions"></select>
+                <select asp-for="ClaimType" class="form-control" asp-items="ViewBag.ClaimTypeOptions" id="claimTypeDropdown"></select>
                 <span asp-validation-for="ClaimType" class="text-danger"></span>
             </div>
+
+            <!-- Description -->
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+
+            <!-- Claim Date -->
             <div class="form-group">
                 <label asp-for="ClaimDate" class="control-label"></label>
                 <input asp-for="ClaimDate" class="form-control" />
                 <span asp-validation-for="ClaimDate" class="text-danger"></span>
             </div>
+
+            <!-- Hours Worked -->
             <div class="form-group">
                 <label asp-for="HoursWorked" class="control-label"></label>
-                <input asp-for="HoursWorked" class="form-control" />
+                <input asp-for="HoursWorked" class="form-control" id="hoursWorked" />
                 <span asp-validation-for="HoursWorked" class="text-danger"></span>
             </div>
+
+            <!-- Conditional Fields -->
+            <div class="form-group" id="leaveDaysContainer" style="display:none;">
+                <label asp-for="LeaveDays" class="control-label">Leave Days</label>
+                <input asp-for="LeaveDays" class="form-control" id="leaveDaysInput" />
+                <span asp-validation-for="LeaveDays" class="text-danger"></span>
+            </div>
+
+            <div class="form-group" id="travelDistanceContainer" style="display:none;">
+                <label asp-for="KilometersTravelled" class="control-label">Distance Travelled (km)</label>
+                <input asp-for="KilometersTravelled" class="form-control" id="travelDistanceInput" />
+                <span asp-validation-for="KilometersTravelled" class="text-danger"></span>
+            </div>
+
+            <!-- Claim Expenses (Read-Only) -->
             <div class="form-group">
                 <label asp-for="ClaimExpenses" class="control-label"></label>
-                <input asp-for="ClaimExpenses" class="form-control" />
+                <input asp-for="ClaimExpenses" class="form-control" id="claimExpenses" />
+                <input asp-for="ClaimExpenses" type="hidden" />
                 <span asp-validation-for="ClaimExpenses" class="text-danger"></span>
             </div>
+
+            <!-- Document Upload -->
             <div class="form-group">
                 <label asp-for="Document" class="control-label">Upload Document</label>
                 <input asp-for="Document" type="file" class="form-control" />
@@ -60,4 +85,66 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+
+            const  hourlyRate = @UserDetails.HourlyRate 
+            const foodMultiplier = 0.4;
+            let baseExpense = 0;
+
+            // Elements
+            const claimTypeDropdown = $('#claimTypeDropdown');
+            const hoursWorkedInput = $('#hoursWorked');
+            const leaveDaysContainer = $('#leaveDaysContainer');
+            const travelDistanceContainer = $('#travelDistanceContainer');
+            const leaveDaysInput = $('#leaveDaysInput');
+            const travelDistanceInput = $('#travelDistanceInput');
+            const claimExpensesInput = $('#claimExpenses');
+
+         
+            function updateClaimExpenses() {
+                const claimType = claimTypeDropdown.val();
+                const hoursWorked = parseFloat(hoursWorkedInput.val()) || 0;
+
+                if (claimType === 'Leave') {
+                    const leaveDays = parseFloat(leaveDaysInput.val()) || 0;
+                    baseExpense = (hoursWorked * hourlyRate) + (leaveDays * hourlyRate);
+                } else if (claimType === 'Travel') {
+                    const distanceTravelled = parseFloat(travelDistanceInput.val()) || 0;
+                    baseExpense = (hoursWorked * hourlyRate) + (distanceTravelled * 23); 
+                } else if (claimType === 'Food') {
+                    baseExpense = (hoursWorked * hourlyRate) * (1 + foodMultiplier);
+                }
+
+                // Update the Claim Expenses input
+                claimExpensesInput.val(baseExpense.toFixed(2));
+            }
+
+            // Show/Hide fields based on Claim Type selection
+            claimTypeDropdown.change(function () {
+                const selectedType = $(this).val();
+                
+                // Show or hide fields
+                if (selectedType === 'Leave') {
+                    leaveDaysContainer.show();
+                    travelDistanceContainer.hide();
+                } else if (selectedType === 'Travel') {
+                    travelDistanceContainer.show();
+                    leaveDaysContainer.hide();
+                } else {
+                    leaveDaysContainer.hide();
+                    travelDistanceContainer.hide();
+                }
+
+                // Recalculate expenses
+                updateClaimExpenses();
+            });
+
+            // Update expenses on user input
+            hoursWorkedInput.on('input', updateClaimExpenses);
+            leaveDaysInput.on('input', updateClaimExpenses);
+            travelDistanceInput.on('input', updateClaimExpenses);
+        });
+    </script>
 }

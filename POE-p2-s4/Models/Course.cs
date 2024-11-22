@@ -11,22 +11,7 @@
         public string UserId { get; set; }
        
 
-        public bool AddCourse()
-        {
-            return false;
-        }
-
-        public bool UpdateCourse()
-        {
-
-
-            return false;
-        }
-
-        public string DeleteCourse()
-        {
-            return "";
-        }
+        
 
     }
 }

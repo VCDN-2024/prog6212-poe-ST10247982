@@ -92,6 +92,7 @@ namespace POE_p2_s4.Controllers
         public IActionResult Create()
         {
             ViewBag.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewBag.User = _context.Users.FirstOrDefault(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             ViewBag.ClaimTypeOptions = new SelectList(Enum.GetValues(typeof(ClaimType)));
             ViewData["ClaimStatus"] = "Pending";
             return View();
@@ -110,6 +111,7 @@ namespace POE_p2_s4.Controllers
                 ModelState.AddModelError("User", "User not found in the database!");
                 return RedirectToAction(nameof(HomeController.Index));
             }
+            ViewBag.User = user;
             Claim claim = new Claim
             {
                 Id = Guid.NewGuid().ToString(),
@@ -117,7 +119,14 @@ namespace POE_p2_s4.Controllers
                 LeaveDays = claimVM.LeaveDays,
                 KilometersTravelled = claimVM.KilometersTravelled,
                 ClaimExpenses = claimVM.ClaimExpenses,
-
+                ClaimDate = claimVM.ClaimDate,
+                ClaimStatus = claimVM.ClaimStatus,
+                Description = claimVM.Description,
+                UserId = claimVM.UserId,
+                Document = claimVM.Document,
+                DocumentBinary = claimVM.DocumentBinary,
+                HoursWorked = claimVM.HoursWorked,
+                
             };
 
             ClaimValidation validator = new ClaimValidation((decimal)user.HourlyRate);
@@ -128,11 +137,12 @@ namespace POE_p2_s4.Controllers
                 {
                ModelState.AddModelError(failure.PropertyName,failure.ErrorMessage);
                 }
+                return View(claimVM);
             }
             if (!ModelState.IsValid)
             {
 
-                return View(claim);
+                return View(claimVM);
             }
             if (claim == null)
             {
@@ -151,14 +161,23 @@ namespace POE_p2_s4.Controllers
                     catch (Exception ex)
                     {
                         ModelState.AddModelError("Document", "Unable to save document, please try again.");
+                     return View(claimVM);
                     }
                 }
+            try
+            {
                 _context.Add(claim);
                 await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                ModelState.AddModelError("Create", "Unable to create claim right now!");
+                return View(claimVM);
+            }
                 return RedirectToAction(nameof(Index));
             
            
-            return View(claim);
+          
         }
 
         // GET: Claims/Edit/5

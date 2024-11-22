@@ -16,10 +16,7 @@
         {
             return true;
         }
-        public string[] submitDocument(IFormFile File)
-        {
-            return ["hey"];
-        }
+       
 
     }
 }
