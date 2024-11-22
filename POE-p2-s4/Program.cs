@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using POE_p2_s4.Data;
 using POE_p2_s4.Models;
+using QuestPDF.Infrastructure;
 
 namespace POE_p2_s4
 {
@@ -10,7 +11,7 @@ namespace POE_p2_s4
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            QuestPDF.Settings.License = LicenseType.Community;
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>

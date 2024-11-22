@@ -8,9 +8,6 @@ namespace POE_p2_s4.Models
         public string? Programme {  get; set; }
         public ICollection<Course>? AssignedCourses { get; set; }
 
-        public void reviewCourseClaims()
-        {
-
-        }
+        
     }
 }
