@@ -48,6 +48,17 @@ namespace POE_p2_s4.Services
                 row.ConstantItem(100).Height(50).Placeholder();
             });
         }
+        
+        public void ComposeContent(IContainer container)
+        {
+            container
+            .PaddingVertical(40)
+            .Height(250)
+            .Background(Colors.Grey.Lighten3)
+            .AlignCenter()
+            .AlignMiddle()
+            .Text("Content").FontSize(16);
+        }
 
 
     }
