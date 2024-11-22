@@ -9,7 +9,7 @@ namespace POE_p2_s4.Validation
     public class ClaimValidation:AbstractValidator<Claim>
     {
         private readonly decimal _hourlyRate;
-        const int maxFileSize = 5 * 1024 * 1024;
+       private const int maxFileSize = 5 * 1024 * 1024;
         private readonly decimal fuel = 23.00m;
         private readonly decimal _foodExpenseMultiplier = 0.4m;  
  
